@@ -102,7 +102,7 @@ def raster_to_json(line):
             al_dr=al_dr+1
                 
         else:
-            print("sometime not 2 dooor",hd,doors)		
+            print("sometime not 2 door",hd,doors)		
     
         assert(len(dr_t)<=2)
   
@@ -270,12 +270,15 @@ def raster_to_json(line):
     info['ed_rm'] = ed_rm
 
     print(bboxes)
+    #make sure figues are closed to save memory
+    plt.cla()
+    plt.close(fig)
+    plt.clf()
    
   
-    ### saving json files
-    with open("../../../../../guriv-64/hg_rooms/"+line[17:-4]+".json","w") as f:
+    ### saving json files change [:] values depending on your input line!
+    with open("C:/Users/G/GitHub/Housegan-data-reader/output/"+line[13:-4]+".json","w") as f:
          json.dump(info, f)
-
 
 
 
@@ -289,7 +292,20 @@ def parse_args():
 def main():
     args = parse_args()
     line=args.path 
-    raster_to_json(line)
+    if(os.path.isfile(line)):
+        raster_to_json(line)
+    else:
+        images = os.listdir(line)
+        images.sort()
+
+        with open('output/list.txt', 'x') as f:
+            f.write('')
+
+        for l in images:
+            raster_to_json(os.path.join(line, l))
+
+            file = open('output/list.txt', 'a+') # Open the file in append and read mode
+            file.write(str(l)+'\n') # Write something to the text file
 
 
 if __name__ == "__main__":
